@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Cars24 Data Scraper - Home</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0; padding: 0;
+        }
+        .header-box {
+            background: #2b6777;
+            color: #fff;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            padding: 48px 0 24px 0;
+            text-align: center;
+            box-shadow: 0 3px 16px rgba(43, 103, 119, 0.09);
+        }
+        .header-box h1 {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .header-box p {
+            font-size: 1rem;
+            color: #bcd8e4;
+            margin: 0;
+        }
+        .message-box {
+            max-width: 700px;
+            margin: 22px auto 0 auto;
+            background: #bcd8e4;
+            color: #2b6777;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(43,103,119,.06);
+            padding: 12px 18px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            text-align: center;
+        }
+        .main-box {
+            max-width: 850px;
+            margin: 32px auto 40px auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px #bcd8e4;
+            padding: 38px 40px 38px 40px;
+        }
+        .form-row {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            align-items: flex-end;
+            flex-wrap: nowrap;
+        }
+        .form-group {
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            color: #2b6777;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+        select, input[type=text], input[type=number] {
+            padding: 14px 12px;
+            font-size: 1.1rem;
+            border-radius: 7px;
+            border: 1px solid #bcd8e4;
+            background-color: #f2f2f2;
+            color: #2b6777;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        select:focus, input[type=text]:focus, input[type=number]:focus {
+            border-color: #52ab98;
+        }
+        .btn-group {
+            margin-top: 36px;
+            display: flex;
+            gap: 22px;
+            justify-content: center;
+        }
+        button {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #52ab98 60%, #2b6777 100%);
+            color: #fff;
+            font-size: 1.15rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 12px 3px #bcd8e4, 0 1px 15px 4px #52ab98;
+            transition: filter 0.25s, box-shadow 0.25s;
+        }
+        button:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 20px 5px #52ab98;
+        }
+        .clear-btn {
+            background: #2b6777;
+            box-shadow: none;
+        }
+        .clear-btn:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 14px 3px #2b6777;
+        }
+        .footer-box {
+            background: #bcd8e4;
+            color: #2b6777;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 14px 0 10px 0;
+            font-size: 1rem;
+            text-align: center;
+            box-shadow: 0 -2px 8px rgba(43,103,119,0.06);
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+        }
+        @media (max-width: 900px) {
+            .main-box {
+                max-width: 95vw;
+                padding: 28px 20px 28px 20px;
+            }
+            .form-row {
+                gap: 14px;
+            }
+            button {
+                padding: 12px 24px;
+                font-size: 1.05rem;
+            }
+        }
+        @media (max-width: 720px) {
+            .form-row {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                gap: 18px;
+            }
+            .form-group {
+                flex: 1 1 45%;
+            }
+            .footer-box {
+                position: static;
+                padding: 10px 0;
+            }
+        }
+        @media (max-width: 480px) {
+            .form-group {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-box">
+        <h1>Cars24 Data Scraper</h1>
+        <p>Extract Real-Time Used Car Data from Cars24</p>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div class="message-box">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div class="main-box">
+        <form method="POST" action="{{ url_for('scrape_car') }}">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="city">Select City</label>
+                    <select id="city" name="city" required>
+                        <option value="" disabled selected>Choose a city...</option>
+                        {% for city in cities %}
+                            <option value="{{ city }}">{{ city }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="brand">Select Brand</label>
+                    <select id="brand" name="brand" required>
+                        <option value="" disabled selected>Choose a brand...</option>
+                        {% for brand in brands %}
+                            <option value="{{ brand }}">{{ brand }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="model">Model (optional)</label>
+                    <input type="text" id="model" name="model" placeholder="e.g., Swift" />
+                </div>
+                <div class="form-group" style="flex: 1 1 15%;">
+                    <label for="pages">Pages (1-10)</label>
+                    <input type="number" id="pages" name="pages" min="1" max="10" value="1" />
+                </div>
+            </div>
+            <div class="btn-group">
+                <button type="submit">🔍 Start Scraping</button>
+                <button type="submit" formaction="{{ url_for('clear_data') }}" class="clear-btn">🗑️ Clear Data</button>
+            </div>
+        </form>
+    </div>
+    <div class="footer-box">
+        © 2025 Made By Rahul
+    </div>
+</body>
+</html>

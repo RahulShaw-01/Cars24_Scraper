@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Cars24 Data Scraper - Results</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0; padding: 0;
+        }
+        .header-box {
+            background: #2b6777;
+            color: #fff;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            padding: 40px 0 22px 0;
+            text-align: center;
+            box-shadow: 0 3px 16px rgba(43, 103, 119, 0.09);
+        }
+        .header-box h1 {
+            font-size: 2.5rem;
+            margin-bottom: 6px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .header-box p {
+            font-size: 1rem;
+            color: #bcd8e4;
+            margin: 0;
+        }
+        .message-box {
+            max-width: 900px;
+            margin: 22px auto 0 auto;
+            background: #bcd8e4;
+            color: #2b6777;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(43,103,119,.06);
+            padding: 12px 18px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            text-align: center;
+        }
+        .stats-panel {
+            max-width: 900px;
+            margin: 32px auto 18px auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px #bcd8e4;
+            padding: 28px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .stats-part {
+            flex: 1 1 150px;
+            margin-bottom: 12px;
+            color: #2b6777;
+        }
+        .stats-part span.main-stat {
+            display: block;
+            font-size: 1.45rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        .stats-label {
+            color: #52ab98;
+            font-size: 1.08rem;
+            font-weight: 500;
+            margin-bottom: 7px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .action-btn {
+            padding: 11px 28px;
+            background: linear-gradient(90deg, #52ab98 60%, #2b6777 100%);
+            color: #fff;
+            border-radius: 8px;
+            font-size: 1.09rem;
+            font-weight: bold;
+            border: none;
+            box-shadow: 0 0 10px 1px #bcd8e4, 0 1px 10px 2px #52ab98;
+            cursor: pointer;
+            transition: filter 0.2s, box-shadow 0.2s;
+            outline: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .action-btn:hover {
+            filter: brightness(1.11);
+            box-shadow: 0 0 16px 2px #52ab98;
+        }
+        .car-table-box {
+            max-width: 1100px;
+            margin: 32px auto 0 auto;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 2px 14px rgba(43,103,119,.08);
+            padding: 18px 28px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            font-size: 1rem;
+        }
+        th, td {
+            padding: 12px 7px;
+            text-align: left;
+        }
+        th {
+            background: #52ab98;
+            color: #fff;
+            font-weight: bold;
+            border-right: 1px solid #bcd8e4;
+        }
+        th:last-child, td:last-child { border-right: none; }
+        tr:nth-child(even) { background: #f2f2f2;}
+        td {
+            color: #2b6777;
+            border-bottom: 1px solid #bcd8e4;
+        }
+        .tag-pill {
+            background-color: #2b6777;
+            color: #fff;
+            border-radius: 12px;
+            padding: 7px 16px;
+            font-size: 0.98rem;
+            font-weight: 500;
+            margin-right: 3px;
+            display: inline-block;
+        }
+        .footer-box {
+            background: #bcd8e4;
+            color: #2b6777;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 12px 0 7px 0;
+            margin-top: 50px;
+            font-size: 1rem;
+            text-align: center;
+            box-shadow: 0 -2px 8px rgba(43,103,119,0.06);
+        }
+        @media (max-width: 1100px) {
+            .car-table-box, .stats-panel { max-width: 99vw; padding: 15px; }
+        }
+        @media (max-width: 700px) {
+            .header-box, .footer-box { padding-left: 10px; padding-right: 10px; }
+            .stats-panel { flex-direction: column; padding: 12px 2vw; gap: 12px;}
+            .main-box { padding: 12px; }
+            th, td { font-size: 0.97rem; padding: 8px 3px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-box">
+        <h1>Cars24 Data Scraper</h1>
+        <p>Extract Real-Time Used Car Data from Cars24</p>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div class="message-box">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div class="stats-panel">
+        <div class="stats-part">
+            <span class="main-stat">{{ stats.total_cars }}</span>
+            <span class="stats-label">Total Cars Found</span>
+        </div>
+        <div class="stats-part">
+            <span class="main-stat">₹{{ stats.price_min }} - ₹{{ stats.price_max }}</span>
+            <span class="stats-label">Price Range</span>
+        </div>
+        <div class="stats-part">
+            <span class="main-stat">{{ stats.avg_year }}</span>
+            <span class="stats-label">Average Year</span>
+        </div>
+        <div class="btn-group">
+            <a href="{{ url_for('export_excel') }}" class="action-btn">⬇️ Download Excel</a>
+            <a href="{{ url_for('index') }}" class="action-btn">⏮️ New Search</a>
+            <a href="{{ url_for('clear_data') }}" class="action-btn">🗑️ Clear Data</a>
+        </div>
+    </div>
+    <div class="car-table-box">
+        <table>
+            <thead>
+                <tr>
+                    <th>Car Name</th>
+                    <th>Year</th>
+                    <th>Price</th>
+                    <th>Location</th>
+                    <th>KM Driven</th>
+                    <th>Fuel Type</th>
+                    <th>Transmission</th>
+                    <th>Scraped At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for car in cars %}
+                <tr>
+                    <td>{{ car.Car_Name }}</td>
+                    <td>{{ car.Year }}</td>
+                    <td>{{ car.Price }}</td>
+                    <td>{{ car.Location }}</td>
+                    <td>{{ car.KM_Driven }}</td>
+                    <td><span class="tag-pill">{{ car.Fuel_Type }}</span></td>
+                    <td><span class="tag-pill">{{ car.Transmission }}</span></td>
+                    <td>{{ car.Scraped_At }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="footer-box">
+        © 2025 Made By Rahul
+    </div>
+</body>
+</html>
