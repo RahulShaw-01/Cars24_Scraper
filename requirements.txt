@@ -7,3 +7,4 @@ lxml==4.9.3
 html5lib==1.1
 Werkzeug==2.3.7
 numpy
+gunicorn
