@@ -37,6 +37,7 @@ class Car24Scraper:
                 if response.status_code != 200:
                     continue
                 soup = BeautifulSoup(response.content, 'html.parser')
+
                 bigbox = soup.find('div', {'class': 'styles_wrapper__b4UUV'})
                 
                 if not bigbox:
