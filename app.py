@@ -104,7 +104,7 @@ def index():
     cities = ['Kolkata', 'Mumbai', 'Delhi NCR', 'Bangalore', 'Chennai', 'Hyderabad', 'Pune', 'Ahmedabad', 'Surat', 'Jaipur',
               'New Delhi', 'Kochi', 'Nashik', 'Ludhiana', 'Chandigarh', 'Patna', 'Indore', 'Coimbatore', 'Ghaziabad',
               'Lucknow', 'Noida', 'Gurgaon', 'Nagpur', 'Rajkot', 'Vadodara', 'Agra', 'Chandigarh tricity']
-    brands = ['All', 'Maruti', 'Hyundai', 'Tata', 'Honda', 'Mahindra', 'Ford', 'Toyota', 'KIA', 'Renault', 'Volkswagen']
+    brands = ['Maruti Suzuki', 'Hyundai', 'Tata', 'Honda', 'Mahindra', 'Ford', 'Toyota', 'KIA', 'Renault', 'Volkswagen', 'Skoda', 'Mercedes Benz', 'BMW', 'Audi', 'Jeep']
     return render_template('index.html', cities=cities, brands=brands)
 
 @app.route('/scrape', methods=['POST'])
