@@ -37,42 +37,46 @@ class Car24Scraper:
                 if response.status_code != 200:
                     continue
                 soup = BeautifulSoup(response.content, 'html.parser')
-                bigbox = soup.find_all('div', {'class': 'styles_wrapper__b4UUV'})
-                if not bigbox:
+                
+                # Updated main container selector
+                car_list = soup.find_all('div', class_='car-item')
+                if not car_list:
+                    print(f"No car items found on page {page}. Stopping.")
                     break
-                smallbox = bigbox[0].find_all('div', {'class': 'styles_contentWrap__9oSrl'})
-                if not smallbox:
-                    break
-                for car_element in smallbox:
+                
+                for car_element in car_list:
                     car_data = self.extract_car_info(car_element)
                     if car_data:
                         all_cars.append(car_data)
-                time.sleep(1)
-            except Exception:
+                time.sleep(2) # Increased delay to reduce risk of being blocked
+            except Exception as e:
+                print(f"An error occurred while scraping page {page}: {e}")
                 continue
         return all_cars
 
     def extract_car_info(self, car_element):
         try:
-            name_element = car_element.find('span', {'class': 'sc-braxZu kjFjan'})
+            # More stable selectors
+            name_element = car_element.find('h2', {'class': 'car-name'})
             if name_element:
                 full_name = name_element.get_text().strip()
-                year = full_name[:4] if len(full_name) >= 4 else "N/A"
-                name = full_name[5:] if len(full_name) > 5 else full_name
+                name_parts = full_name.split(' ', 1)
+                year = name_parts[0] if len(name_parts) > 0 else 'N/A'
+                name = name_parts[1] if len(name_parts) > 1 else 'N/A'
             else:
                 return None
 
-            price_element = car_element.find('p', {'class': 'sc-braxZu cyPhJl'})
+            price_element = car_element.find('div', class_='price')
             price = price_element.get_text().strip() if price_element else 'N/A'
 
-            location_element = car_element.find('p', {'class': 'sc-braxZu lmmumg'})
+            location_element = car_element.find('div', class_='location')
             location = location_element.get_text().strip() if location_element else 'N/A'
-            location = ' '.join(location.split()) if location != 'N/A' else 'N/A'
-
-            detail_element = car_element.find_all('p', {'class': 'sc-braxZu kvfdZL'})
-            km_driven = detail_element[0].get_text().strip() if len(detail_element) > 0 else 'N/A'
-            fuel_type = detail_element[1].get_text().strip() if len(detail_element) > 1 else 'N/A'
-            transmission = detail_element[2].get_text().strip() if len(detail_element) > 2 else 'N/A'
+            
+            # The structure for these is more complex, so we'll grab them from a list
+            details_list = car_element.find_all('li')
+            km_driven = details_list[0].get_text().strip() if len(details_list) > 0 else 'N/A'
+            fuel_type = details_list[1].get_text().strip() if len(details_list) > 1 else 'N/A'
+            transmission = details_list[2].get_text().strip() if len(details_list) > 2 else 'N/A'
 
             return {
                 'Car_Name': name,
